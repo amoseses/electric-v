@@ -1,0 +1,116 @@
+//Eletric 
+float TICKS_PER_CM = 25.0;
+float SQUARE_CM    = 84.0;
+long  TURN_TICKS   = 600;
+int   LEFT_POWER   = 250;
+int   RIGHT_POWER  = 180;
+int   TURN_POWER   = 180;
+int LMP  = 8;
+int LMN  = 7;
+int RMP  = 9;
+int RMN  = 10;
+int LMSC = 5;
+int RMSC = 6;
+volatile long encoderCount = 0;
+volatile unsigned long lastEncoderTime = 0;
+long ONE_SQUARE;
+
+void setup()
+{
+  pinMode(LMP,  output);
+  pinMode(LMN,  output);
+  pinMode(RMP,  output);
+  pinMode(RMN,  output);
+  pinMode(LMSC, output);
+  pinMode(RMSC, output);
+  pinMode(2, INPUT_PULLUP);
+  pinMode(3, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(2), countEncoder, RISING);
+  Serial.begin(9600);
+  ONE_SQUARE = (long)(SQUARE_CM * TICKS_PER_CM);
+  while (digitalRead(3) == HIGH) {}
+  competitionRun();
+}
+void loop()
+{
+  Serial.print("ticks: "); Serial.println(encoderCount);
+  delay(200);
+}
+
+void stopMotors()
+{
+  analogWrite(LMSC, 0);
+  analogWrite(RMSC, 0);
+  digitalWrite(LMP, LOW); digitalWrite(LMN, LOW);
+  digitalWrite(RMP, LOW); digitalWrite(RMN, LOW);
+  delay(150);
+}
+
+void forward(long ticks)
+{
+  noInterrupts(); encoderCount = 0; interrupts();
+  digitalWrite(LMN, HIGH); digitalWrite(LMP, LOW);  // left forward
+  digitalWrite(RMN, LOW);  digitalWrite(RMP, HIGH); // right forward
+  analogWrite(LMSC, LEFT_POWER);
+  analogWrite(RMSC, RIGHT_POWER);
+  while (encoderCount < ticks) {}
+  stopMotors();
+}// turnRight: left forward, right backward — point turn in place
+
+void backwards(long ticks)
+{
+  noInterrupts(); encoderCount = 0; interrupts();
+  digitalWrite(LMN, LOW); digitalWrite(LMP, HIGH);  // left forward
+  digitalWrite(RMN, HIGH);  digitalWrite(RMP, LOW); // right forward
+  analogWrite(LMSC, LEFT_POWER);
+  analogWrite(RMSC, RIGHT_POWER);
+  while (encoderCount < ticks) {}
+  stopMotors();
+}
+void turnRight(long ticks)
+{
+  noInterrupts(); encoderCount = 0; interrupts();
+  digitalWrite(LMN, HIGH); digitalWrite(LMP, LOW);   // left  FORWARD
+  digitalWrite(RMN, HIGH); digitalWrite(RMP, LOW);   // right BACKWARD
+  analogWrite(LMSC, TURN_POWER);
+  analogWrite(RMSC, TURN_POWER);
+  while (encoderCount < ticks) {}
+  stopMotors();
+}
+
+// turnLeft
+void turnLeft(long ticks)
+{
+  noInterrupts(); encoderCount = 0; interrupts();
+  digitalWrite(LMN, LOW);  digitalWrite(LMP, HIGH);  // left  BACKWARD
+  digitalWrite(RMN, LOW);  digitalWrite(RMP, HIGH);  // right FORWARD
+  analogWrite(LMSC, TURN_POWER);
+  analogWrite(RMSC, TURN_POWER);
+  while (encoderCount < ticks) {}
+  stopMotors();
+}
+void countEncoder()
+{
+  unsigned long now = micros();
+  if (now - lastEncoderTime >= 300)
+  {
+    encoderCount++;
+    lastEncoderTime = now;
+  }
+}
+// ROute
+void competitionRun()
+{
+  forward(ONE_SQUARE * 17);
+
+ 
+
+
+  //forward(ONE_SQUARE * 1);
+  //turnLeft()
+  
+
+  
+  
+
+}
