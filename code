@@ -49,8 +49,8 @@ void stopMotors()
 void forward(long ticks)
 {
   noInterrupts(); encoderCount = 0; interrupts();
-  digitalWrite(LMN, HIGH); digitalWrite(LMP, LOW);  // left forward
-  digitalWrite(RMN, LOW);  digitalWrite(RMP, HIGH); // right forward
+  digitalWrite(LMN, HIGH); digitalWrite(LMP, LOW);  // this is left forward
+  digitalWrite(RMN, LOW);  digitalWrite(RMP, HIGH); // this is rightright forward
   analogWrite(LMSC, LEFT_POWER);
   analogWrite(RMSC, RIGHT_POWER);
   while (encoderCount < ticks) {}
@@ -60,8 +60,8 @@ void forward(long ticks)
 void backwards(long ticks)
 {
   noInterrupts(); encoderCount = 0; interrupts();
-  digitalWrite(LMN, LOW); digitalWrite(LMP, HIGH);  // left forward
-  digitalWrite(RMN, HIGH);  digitalWrite(RMP, LOW); // right forward
+  digitalWrite(LMN, LOW); digitalWrite(LMP, HIGH);  // left forward but back
+  digitalWrite(RMN, HIGH);  digitalWrite(RMP, LOW); // right forward but back
   analogWrite(LMSC, LEFT_POWER);
   analogWrite(RMSC, RIGHT_POWER);
   while (encoderCount < ticks) {}
@@ -70,8 +70,8 @@ void backwards(long ticks)
 void turnRight(long ticks)
 {
   noInterrupts(); encoderCount = 0; interrupts();
-  digitalWrite(LMN, HIGH); digitalWrite(LMP, LOW);   // left  FORWARD
-  digitalWrite(RMN, HIGH); digitalWrite(RMP, LOW);   // right BACKWARD
+  digitalWrite(LMN, HIGH); digitalWrite(LMP, LOW);   
+  digitalWrite(RMN, HIGH); digitalWrite(RMP, LOW);   
   analogWrite(LMSC, TURN_POWER);
   analogWrite(RMSC, TURN_POWER);
   while (encoderCount < ticks) {}
@@ -82,8 +82,8 @@ void turnRight(long ticks)
 void turnLeft(long ticks)
 {
   noInterrupts(); encoderCount = 0; interrupts();
-  digitalWrite(LMN, LOW);  digitalWrite(LMP, HIGH);  // left  BACKWARD
-  digitalWrite(RMN, LOW);  digitalWrite(RMP, HIGH);  // right FORWARD
+  digitalWrite(LMN, LOW);  digitalWrite(LMP, HIGH);  
+  digitalWrite(RMN, LOW);  digitalWrite(RMP, HIGH);  
   analogWrite(LMSC, TURN_POWER);
   analogWrite(RMSC, TURN_POWER);
   while (encoderCount < ticks) {}
